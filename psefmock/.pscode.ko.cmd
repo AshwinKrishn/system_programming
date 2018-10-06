@@ -1,0 +1,1 @@
+cmd_/home/ashwingkrish/system_programming/psefmock/pscode.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds  --build-id  -o /home/ashwingkrish/system_programming/psefmock/pscode.ko /home/ashwingkrish/system_programming/psefmock/pscode.o /home/ashwingkrish/system_programming/psefmock/pscode.mod.o ;  true
