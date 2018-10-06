@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
 int ls_mock(char * filepath){
 
@@ -15,6 +16,7 @@ int ls_mock(char * filepath){
 	dir = opendir(filepath);
 	if(!dir){
 		perror("open dir failed");
+		exit(0);
 	}
 	while((direc_entry = readdir(dir)) != NULL){
 		printf("the directory entry inode is %lu record length is %d with file type\" %x \" and the name is %s \n ",direc_entry->d_ino,direc_entry->d_reclen,direc_entry->d_type,direc_entry->d_name);
@@ -28,7 +30,8 @@ int ls_mock(char * filepath){
 }
 void main(){
 
-	ls_mock("../system_programming");
+//	ls_mock("../../system_programming");
+	ls_mock(".");
 	
 }
 
