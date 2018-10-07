@@ -1,0 +1,30 @@
+#include <sys/mman.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(){
+
+	int pid;
+	pid = fork();
+	char * shared_memory;
+	shared_memory = mmap(NULL,1024 * sizeof(char),PROT_WRITE | PROT_READ,MAP_SHARED | MAP_ANONYMOUS,-1,0);
+	if(pid >0){
+		char ashwin[11] = "ashwinKrish"
+		for(int i =0;i<10<i++){
+			
+			*(shared_memory +i) = ashwin[i];  
+			
+		}		
+		printf("written master\n");
+	}
+	else {
+
+		for(int i = 0;i<11 ; i++){
+			printf("string : %c\n", *(shared_memory +1));
+		}
+		printf("slave done \n");
+	}
+	munmap(shared_mmemory,1024*sizeof(char));
+	return 0;
+}
