@@ -65,12 +65,11 @@ void main(){
 			case 3:
 				printf("the list is \n\t");
 				struct list * new = list_head ;
-                                do{ 
+                                while(new != NULL){ 
 					printf("%d ",new->value);
 					new = new->next;
 					
-				}while(new->next != NULL);
-				printf("%d ",new->value);
+				}
 				printf("\n");
 				break;
 			case 0:

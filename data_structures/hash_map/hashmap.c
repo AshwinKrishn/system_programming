@@ -91,13 +91,12 @@ int main(int argv , char * argc[]){
 			case 3:
 				printf("the list is\n\t");
 				struct list * new = list_head ;
-                                do{ 
+                                while(new != NULL){ 
 					printf("ID:%x\tvalue:%d\n\t ",new->id,new->value);
 					new = new->next;
 					
-				}while(new->next != NULL);
+				}
 
-				printf("ID:%x\tvalue:%d ",new->id,new->value);
 				printf("\n");
 				break;
 			
@@ -108,22 +107,16 @@ int main(int argv , char * argc[]){
 					new = list_head ;
 				
 					final_crc = crc_32(input,sizeof(input));
-						do{
-							if(new->id == final_crc){
+						while((new != NULL) ){
+						if(new->id == final_crc){
 
-								printf("found the ID %s and value is %d\n\n" \
-									,input,new->value);
-								found =1;
-							}
-							new = new->next;
+							printf("found the ID %s and value is %d\n\n" \
+								,input,new->value);
+							found =1;
+						}
+						new = new->next;
 
-						}while((new->next != NULL) );
-					if(new->id == final_crc){
-
-                                                printf("found the ID %s and value is %d\n\n" \
-	                                                ,input,new->value);
-                                                found =1;
-                                         }
+					}
 					
 					if(found == 1){
 						found =0;
