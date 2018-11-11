@@ -6,6 +6,8 @@
 #include <linux/fs.h>
 #include <linux/device.h>
 #include <linux/cdev.h>
+#include <linux/init.h>
+#include <linux/uaccess.h>  
 
 MODULE_LICENSE("GPL");              /// type -- this affects runtime behavior
 MODULE_AUTHOR("Ashwin");      ///< The author -- visible when you use modinfo
@@ -18,6 +20,9 @@ MODULE_PARM_DESC(name, "The name to display in /var/log/kern.log");  ///cription
 static dev_t ashwing_dev;
 static struct class * ashwing_class;
 static struct cdev	ashwing_cdev;
+
+static char ash[256] = {0};
+static int ash_len;
 
 static int my_open(struct inode *i, struct file *f)
 {
@@ -32,15 +37,36 @@ static int my_close(struct inode *i, struct file *f)
 static ssize_t my_read(struct file *f, char __user *buf, size_t len, loff_t *off)
 {
     printk(KERN_INFO "Driver: read()\n");
-    return 0;
+    if (*off == 0)
+    { 
+        if (copy_to_user(buf, ash, ash_len) != 0)
+            return -EFAULT;
+        else
+        {
+            (*off)++;
+            return ash_len;
+        }
+    }
+    else
+        return (ash_len = 0); 		
 }
-static ssize_t my_write(struct file *f, const char __user *buf, size_t len,
-    loff_t *off)
+static ssize_t my_write(struct file *f, const char __user *buf, size_t len, loff_t *off)
 {
-    printk(KERN_INFO "Driver: write()\n");
-    return len;
+    printk(KERN_INFO "Driver: write() witth %zu bytes\n",len);
+    if(copy_from_user(ash,buf,len) != 0){
+	return -EFAULT;
+    }
+    else{
+	int i = 0,j = (int)len;
+	ash_len = len;
+	printk(KERN_INFO"the string is :::: ");
+	for(i = 0; i < j;i++){
+    		printk(KERN_INFO "%c",*(ash+i));
+	}
+	printk(KERN_INFO"\n string print from write done");
+	return len;
+    }
 }
-
 static struct file_operations ashwing_fops =
 {
     .owner = THIS_MODULE,
@@ -88,11 +114,11 @@ static int __init ash_init(void){
 
 static void __exit ash_exit(void){
 
-	printk(KERN_INFO"exiting");
 	cdev_del(&ashwing_cdev);
 	device_destroy(ashwing_class,ashwing_dev);
 	class_destroy(ashwing_class);
 	unregister_chrdev_region(ashwing_dev,3);
+	printk(KERN_INFO"exiting");
 }
 
 module_init(ash_init);
